@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
-public class FSM<T>
+public class FSM
 {
     protected IStateRunner owner;
     private IState currentState;
     protected Dictionary<Type, IState> states;
 
-    public FSM(T ownerType, IStateRunner ownerInterface)
+    public FSM(Type ownerType, IStateRunner ownerInterface)
     {
         owner = ownerInterface;
         states = new Dictionary<Type, IState>();
-        if (ownerType.GetType() == typeof(Enemy))
+        Debug.Log("FSM constructor");
+        if (true) // Check if it is an enemy ?? aghaerahr
         {
             InitializeEnemy();
         }
@@ -21,11 +22,15 @@ public class FSM<T>
 
     private void InitializeEnemy()
     {
+        Debug.Log("Enemy Init");
         states.Add(typeof(EnemyIdleState), new EnemyIdleState());
-        states.Add(typeof(EnemyPatrolState), new EnemyPatrolState());
         states.Add(typeof(EnemyAttackState), new EnemyAttackState());
+       // states.Add(typeof(EnemyPatrolState), new EnemyPatrolState());
 
         currentState = states[typeof(EnemyIdleState)];
+        currentState.onSwitch += ChangeState;
+        currentState.Enter(owner);
+        
     }
 
     public void Execute()
@@ -38,8 +43,23 @@ public class FSM<T>
 
     public void ChangeState(Type newStateType)
     {
-        currentState?.Exit(owner);
+        if (currentState != null)
+        {
+            currentState.Exit(owner);
+            currentState.onSwitch -= ChangeState;
+        }
         currentState = states[newStateType];
+
+        currentState.Enter(owner);
+        currentState.onSwitch += ChangeState;
+    }
+
+    /*
+    public void ChangeState(Type newStateType)
+    {
+        currentState?.Exit(owner);
+        
         currentState?.Enter(owner);
     }
+    */
 }

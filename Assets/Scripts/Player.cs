@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] Rigidbody2D rb;
+    private float speed = 2f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,52 +21,40 @@ public class Player : MonoBehaviour
     void Update()
     {
         Movement();
+        if (Input.GetMouseButtonDown(0))
+        {
+            Shoot();
+        }
     }
 
     private void Movement()
     {
-
+        Vector2 movement;
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
+        rb.velocity = movement * speed;
     }
 
-    // Aiming? Shooting?
-}
-
-/*
-
-public class PlayerGun : MonoBehaviour
-{
-    private Player player;
-    public PlayerGun(Player player) { this.player = player; }
-
-    // Handles the aiming of the gun the player is holding
-    private void RotateGun()
+    // Handles the aiming with the mouse
+    public float FindAngle()
     {
-        // Calculating the angle of where the player's mouse is in relation to the player
-        Vector2 aimDirection = Camera.main.ScreenToWorldPoint(
-            Input.mousePosition) - player.transform.position;
-        float angle = Mathf.Atan2(aimDirection.y, aimDirection.x);
-        float angleDeg = angle * Mathf.Rad2Deg - 180;
-
-        // Rotating the gun according to where the player is pointing their mouse
-        Quaternion rotation = Quaternion.AngleAxis(angleDeg, Vector3.forward);
-        transform.rotation = rotation;
-
-        // Has the gun rotate around the player at all times
-        transform.position = new Vector2(1.5f * Mathf.Cos(angle) +
-            player.transform.position.x, 1.5f * Mathf.Sin(angle) +
-            player.transform.position.y);
+        // Aiming the weapon at the mouse
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 lookDirection = mousePos - rb.position;
+        //float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) *
+        //                         Mathf.Rad2Deg - 180;
+        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x);
+        return angle;
     }
 
-// Shoots a regular bullet
+    // Shoots a regular bullet
     void Shoot()
     {
+        // Instantiate bullet
         GameObject bullet = Instantiate(bulletPrefab,
-            bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-        rb.AddForce(bulletSpawnPoint.right * bulletSpeed, ForceMode2D.Impulse);
-        cooldownTimer = cooldown;
-        pewSound.Play();
+            transform.position, transform.rotation);
+        // Set bullet MoveAngle to FindAngle();
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        bulletScript.angle = FindAngle();
     }
 }
-
-*/

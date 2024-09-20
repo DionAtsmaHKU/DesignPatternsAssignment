@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +5,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] List<Transform> spawnPositions = new List<Transform>();
     [SerializeField] GameObject enemyPrefab;
+
     private int currentSpawnPos = 0;
     private float timer = 0f;
 

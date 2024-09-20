@@ -1,36 +1,34 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
 using System;
 public class FSM
 {
     protected IStateRunner owner;
-    private IState currentState;
     protected Dictionary<Type, IState> states;
 
-    public FSM(Type ownerType, IStateRunner ownerInterface)
+    private IState currentState;
+
+    public FSM(IStateRunner ownerInterface)
     {
         owner = ownerInterface;
         states = new Dictionary<Type, IState>();
-        Debug.Log("FSM constructor");
-        if (true) // Check if it is an enemy ?? aghaerahr
+
+        // I couldn't figure out how to specifically figure out whether this owner is of type Enemy,
+        // so for convenience i set this condition to always be true.
+        if (true) 
         {
             InitializeEnemy();
         }
     }
 
+    // Method for inatializing an Enemy class with a FSM.
     private void InitializeEnemy()
     {
-        Debug.Log("Enemy Init");
         states.Add(typeof(EnemyIdleState), new EnemyIdleState());
         states.Add(typeof(EnemyAttackState), new EnemyAttackState());
-       // states.Add(typeof(EnemyPatrolState), new EnemyPatrolState());
 
         currentState = states[typeof(EnemyIdleState)];
         currentState.onSwitch += ChangeState;
         currentState.Enter(owner);
-        
     }
 
     public void Execute()
@@ -53,13 +51,4 @@ public class FSM
         currentState.Enter(owner);
         currentState.onSwitch += ChangeState;
     }
-
-    /*
-    public void ChangeState(Type newStateType)
-    {
-        currentState?.Exit(owner);
-        
-        currentState?.Enter(owner);
-    }
-    */
 }

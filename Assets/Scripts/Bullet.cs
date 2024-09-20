@@ -1,17 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float speed = 10f;
     public float angle;
+
+    private float speed = 10f;
     private Vector2 vectorAngle;
 
     private void Start()
     {
+        // Sets angle the bullet will move at
         vectorAngle = new Vector2(Mathf.Cos(angle),  Mathf.Sin(angle)).normalized;
     }
 

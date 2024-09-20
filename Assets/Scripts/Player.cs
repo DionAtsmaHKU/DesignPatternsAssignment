@@ -41,8 +41,6 @@ public class Player : MonoBehaviour
         // Aiming the weapon at the mouse
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 lookDirection = mousePos - rb.position;
-        //float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) *
-        //                         Mathf.Rad2Deg - 180;
         float angle = Mathf.Atan2(lookDirection.y, lookDirection.x);
         return angle;
     }
@@ -53,7 +51,8 @@ public class Player : MonoBehaviour
         // Instantiate bullet
         GameObject bullet = Instantiate(bulletPrefab,
             transform.position, transform.rotation);
-        // Set bullet MoveAngle to FindAngle();
+
+        // Set bullet angle to FindAngle();
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         bulletScript.angle = FindAngle();
     }

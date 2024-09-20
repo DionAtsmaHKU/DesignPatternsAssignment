@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,17 +19,17 @@ public class Bullet : MonoBehaviour
     void Update()
     {
         transform.Translate(vectorAngle * speed * Time.deltaTime);
+        if (transform.position.magnitude > 50)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Enemy>() != null)
+        if (collision.GetComponent<Enemy>())
         {
-            // Send enemy to object pool
-        }
-        else
-        {
-            // Send bullet to object pool
+            ObjectPoolManager.ReturnObjectToPool(collision.gameObject);
         }
     }
 }

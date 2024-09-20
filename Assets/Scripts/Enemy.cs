@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour, IStateRunner
     public float speed { get; set; }
     private FSM fsm;
 
-    void Start()
+    void OnEnable()
     {
         fsm = new FSM(typeof(Enemy), this);
     }
